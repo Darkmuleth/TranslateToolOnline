@@ -43,13 +43,6 @@ $(function () {
     var hasError = false;
 
     function Translate() {
-        //var test = [];
-        //for (var i = 0; i < 20; i++) {
-        //    test.push(i);
-        //}
-        //alert(test);
-        //return;
-
         var preset = GetPreset();
 
         hasError = false;
@@ -60,18 +53,17 @@ $(function () {
             return;
         }
         
-        console.log("\n自定义词典: \n" + JSON.stringify(preset));
-        //console.log(ToSign(12346));
-        //return;
-        
         AjaxTranslate(packages, function (data) {
             if (data == null) {
                 return;
             }
 
+            var _output = $("#TranslationOutput").html("");
             var result = [];
             $.each(data, function (i, v) {
                 $.each(v.trans_result, function (ii, vv) {
+                    _output.append("<p>dst: " + vv.dst + "</p>");
+
                     vv.dst = ToCDB(vv.dst);
                     $.each(preset, function (iii, p) {
                         vv.src = vv.src.replace(p.regSign, p.source);
@@ -82,6 +74,8 @@ $(function () {
             });
             SetTranslation(result);
             $("#ShowSourceText").change();
+
+            console.log("完成!");
         });
     }
 
@@ -111,19 +105,10 @@ $(function () {
         var str1 = appid + query + salt + key;
         var sign = MD5(str1);
 
-        //query = encodeURI(query);
-
-        //var formdata = new FormData();
-        //formdata.append("q", query);
-        //formdata.append("appid", appid);
-        //formdata.append("salt", salt);
-        //formdata.append("from", from);
-        //formdata.append("to", to);
-        //formdata.append("sign", sign);
-
         $("#TranslateButton").addClass("Disable");
         $("#Translation").html('<span style="font-weight:bold;font-size:20px;color:#11a1d1;">正在处理中...</span>')
 
+        console.log("发送翻译请求");
         $.ajax({
             //url: 'http://api.fanyi.baidu.com/api/trans/vip/translate',
             url: 'https://fanyi-api.baidu.com/api/trans/vip/translate',
@@ -144,6 +129,7 @@ $(function () {
             //contentType: false,
             success: function (data) {
                 if ((data.error_code != null) && ($.trim(data.error_code) != "")) {
+                    console.log("翻译请求发送成功, 但是远程翻译程序返回了错误信息: \n error code: " + data.error_code + "; error message: " + data.error_msg);
                     alert("错误! \n error code: " + data.error_code + "\n" + data.error_msg);
                 }
 
@@ -153,6 +139,7 @@ $(function () {
                 TRANS_DATA.push(data);
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Ajax错误, 翻译请求发送失败");
                 alert("Ajax错误!\n" + textStatus + "\n" + errorThrown);
             },
             complete: function (jqXHR, textStatus) {
@@ -226,6 +213,8 @@ $(function () {
             }
         }
 
+        console.log("将拆分为" + result.length + "个部分发送翻译请求");
+
         return result;
     }
 
@@ -245,6 +234,8 @@ $(function () {
     }
 
     function GetPreset() {
+        //console.log("创建自定义词典===========");
+        var _output = $("#PresetOutput").html("");
         var pList = $("#Preset").val().split("\n");
         var list = [];
         for (var i = pList.length - 1; i >= 0; i--) {
@@ -266,37 +257,32 @@ $(function () {
                 }
 
                 p.regSource = new RegExp(p.source, "gi");
-                p.regSign = new RegExp(Joint(p.sign, "\\s{0,}"), "gi");
+                //var regSignString = Joint(p.sign, "\\s{0,}");
+                var regSignString = p.sign;
+                p.regSign = new RegExp(regSignString, "gi");
                 //p.regSinString = Joint(p.sign, "\\s{0,}");
 
                 list.push(p);
                 //alert(p.dst)
+
+                //console.log(">> " + i +" { source: " + p.source + ", dst: " + p.dst + ", sign: " + p.sign + ", regSign: /" + regSignString + "/gi }");
+                _output.append("<p>自定义词典" + i +" { source: " + p.source + ", dst: " + p.dst + ", sign: " + p.sign + ", regSign: /" + regSignString + "/gi } </p>")
             }
         }
+        //console.log("===========自定义词典创建完毕");
 
         return list;
     }
     
-    // var tttt = "# #！< # #";
-    // var regString = Joint("##!<##", "\\s{0,}");
-    // var reg = new RegExp(regString, "gi");
-    // var tetet = tttt.replace(reg, "");
-    // console.log(tetet);
-    // console.log(reg.value);
-
-    //匹配这些中文标点符号 。 ？ ！ ， 、 ； ： “ ” ‘ ’ （ ） 《 》 〈 〉 【 】 『 』 「 」 ? ? 〔 〕 … — ～ ? ￥
-    //var reg = /[\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/;
-    
-
     function ToSign(number) {
-        number = number.toString();
-        if (number.length > 1) {
-            var result = "";
-            for(var i =0; i < number.length; i++){
-                result += ToSign(number[i]);
-            }
-            return result;
-        }
+        // number = number.toString();
+        // if (number.length > 1) {
+        //     var result = "";
+        //     for(var i =0; i < number.length; i++){
+        //         result += ToSign(number[i]);
+        //     }
+        //     return result;
+        // }
 
         // var digitalCode = {
         //     _0: "#",
@@ -310,35 +296,19 @@ $(function () {
         //     _8: "=",
         //     _9: "_"
         // };
-        
-        var digitalCode = {
-            _0: "90712",
-            _1: "91733",
-            _2: "92742",
-            _3: "93763",
-            _4: "94711",
-            _5: "95798",
-            _6: "96707",
-            _7: "97700",
-            _8: "98766",
-            _9: "99778"
-        };
 
-        return digitalCode["_" + number];
+        //return digitalCode["_" + number];
+
+        var t = 902451;
+        return t + (+number) * 2;
     }
 
-    //for (var nn = 0; nn < 10; nn++) {
-    //    var xx = "##" + ToSign(nn) + "##";
-    //    new RegExp(xx, "gi");
-    //    console.log(xx);
-    //}
-
     /**
-        * 文本框根据输入内容自适应高度
-        * @param                {HTMLElement}           输入框元素
-        * @param                {Number}                设置光标与输入框保持的距离(默认0)
-        * @param                {Number}                设置最大高度(可选)
-        */
+    * 文本框根据输入内容自适应高度
+    * @param                {HTMLElement}           输入框元素
+    * @param                {Number}                设置光标与输入框保持的距离(默认0)
+    * @param                {Number}                设置最大高度(可选)
+    */
     var autoTextarea = function (elem, extra, maxHeight) {
         extra = extra || 0;
         var isFirefox = !!document.getBoxObjectFor || 'mozInnerScreenX' in window,
