@@ -1,0 +1,151 @@
+
+body, h1, h2, h3, h4, h5, h6, address, blockquote, dd, dl, hr, form, input {
+    margin: 0;
+    padding: 0;
+}
+
+body, input, select {
+    font-family: arial,verdana,geneva,helvetica,sans serif,"宋体";
+    font-size: 12px;
+}
+
+table {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+p {
+    margin: 5px 0;
+}
+
+input[type="text"] {
+    border: 1px solid #6DA5B6;
+    height: 18px;
+    line-height: 18px;
+    width: 260px;
+}
+
+a {
+    color: #4F8CBF;
+    text-decoration: none;
+    outline: none;
+}
+
+th {
+    width: 300px;
+    background-color: #eee;
+}
+
+td, th {
+    border: 1px solid #ddd;
+}
+
+label {
+    font-weight: bold;
+}
+
+#MainArea {
+    width: 1400px;
+    margin: 0 auto;
+}
+
+.TranslateInput {
+    width: 99%;
+    resize: none;
+}
+
+#PresetButton {
+    display: block;
+    width: 100%;
+    height: 30px;
+    text-align: center;
+}
+
+    #PresetButton:hover {
+        background-color: #ffe761;
+    }
+
+#TranslateButton {
+    width: 100px;
+    height: 60px;
+    font-size: large;
+    font-weight: bold;
+    background-color: #159bff;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+#TranslateButton:hover {
+    background-color: #007ad5;
+}
+#TranslateButton.Disable,
+#TranslateButton.Disable:hover{
+    background-color: #c3c3c3;
+    cursor:wait;
+}
+
+#ClearButton{
+    width: 40px;
+    height: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #d94b4b;
+    color: white;
+    border-radius: 5px;
+    padding: 3px 10px;
+    float:left;
+    margin-left: 10px;
+}
+#ClearButton:hover{
+    background-color: #b93d3d;
+}
+
+#Translation p {
+    font-size: 15px;
+    position: relative;
+    cursor:pointer;
+    line-height: 28px;
+    margin:0;
+}
+
+    #Translation p:hover {
+        background-color: #defcd1;
+    }
+
+.SourceText {
+    /*position: absolute;*/
+    margin-bottom:3px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    transform: translate(0, -110%);
+    display: none;
+}
+.SourceText > span{
+    background-color: #fff7bb;
+    border: 1px dashed #aaa;
+    border-radius: 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 5px;
+}
+.ErrorMessage{
+    border:1px dashed red;
+    background-color:#fffdce;
+    padding:5px;
+    margin-bottom:5px;
+}
+
+#Source{
+    border-style:none;
+}
+
+.ToolbarTop{
+    position:fixed;
+    top: 0;
+    left:50%;
+    transform:translate(-50%, 0);
+    box-shadow: rgba(0,0,0,0.2) 0 2px 5px;
+    margin: 0 !important;
+    width:1400px;
+}
