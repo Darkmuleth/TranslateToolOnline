@@ -72,6 +72,7 @@ $(function () {
             var result = [];
             $.each(data, function (i, v) {
                 $.each(v.trans_result, function (ii, vv) {
+                    vv.dst = ToCDB(vv.dst);
                     $.each(preset, function (iii, p) {
                         vv.src = vv.src.replace(p.regSign, p.source);
                         vv.dst = vv.dst.replace(p.regSign, p.dst);
@@ -257,7 +258,8 @@ $(function () {
                     source: $.trim(v2[0]),
                     dst: $.trim(v2[1]),
                     // 名词标记
-                    sign: "##" + ToSign(i+1) + "##"
+                    //sign: "##" + ToSign(i+1) + "##"
+                    sign: "" + ToSign(i) + ""
                 };
                 if ((p.source == "") || (p.dst == "")) {
                     continue;
@@ -296,17 +298,30 @@ $(function () {
             return result;
         }
 
+        // var digitalCode = {
+        //     _0: "#",
+        //     _1: ";",
+        //     _2: "@",
+        //     _3: "<",
+        //     _4: ">",
+        //     _5: "!",
+        //     _6: "`",
+        //     _7: "~",
+        //     _8: "=",
+        //     _9: "_"
+        // };
+        
         var digitalCode = {
-            _0: "#",
-            _1: "!",
-            _2: "@",
-            _3: "<",
-            _4: ">",
-            _5: ",",
-            _6: "`",
-            _7: "~",
-            _8: "=",
-            _9: "_"
+            _0: "90712",
+            _1: "91733",
+            _2: "92742",
+            _3: "93763",
+            _4: "94711",
+            _5: "95798",
+            _6: "96707",
+            _7: "97700",
+            _8: "98766",
+            _9: "99778"
         };
 
         return digitalCode["_" + number];
@@ -410,4 +425,26 @@ $(function () {
         //console.log("%c$('ToolbarAnchor') 元素 " + (show ? "在" : "不在") + "当前窗口中显示, box.top: " + box.top, "color:" + (show ? "green" : "red"));
     }
     (window.onscroll = isShow)();
+
+    /**
+     * 全角字符转换为半角字符
+     * @see https://www.cnblogs.com/moqiutao/p/6869794.html?utm_source=itdadao&utm_medium=referral
+     * @param {string} str 
+     */
+    function ToCDB(str) { 
+        var tmp = ""; 
+        for(var i=0;i<str.length;i++){ 
+            if (str.charCodeAt(i) == 12288){
+                tmp += String.fromCharCode(str.charCodeAt(i)-12256);
+                continue;
+            }
+            if(str.charCodeAt(i) > 65280 && str.charCodeAt(i) < 65375){ 
+                tmp += String.fromCharCode(str.charCodeAt(i)-65248); 
+            } 
+            else{ 
+                tmp += String.fromCharCode(str.charCodeAt(i)); 
+            } 
+        } 
+        return tmp 
+    } 
 });
