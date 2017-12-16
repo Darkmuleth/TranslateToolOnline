@@ -1,3 +1,6 @@
+工具地址: https://darkmuleth.github.io/TranslateToolOnline/
+
+
 使用方法:
 1.输入百度API提供的 APPID 和 密钥 ; 没有的话也可以点顶部的'注册链接'自己去申请ID和密钥, 现在是每月200万字符以下免费
 2.输入好自定义词典(可选) 和需要翻译的原文后点击'开始翻译'按钮
